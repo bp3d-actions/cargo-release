@@ -1,0 +1,29 @@
+name: 'cargo-release'
+description: 'Toolkit to help generating releases for BP3D and BPX based projects.'
+author: 'Yuri6037'
+inputs:
+  mode:
+    required: false
+    description: 'get to get information about the upcoming release, publish to run the publish command across updated crates'
+    default: get
+  token:
+    required: true
+    description: 'the GitHub Actions token'
+  cwd:
+    required: false
+    description: 'working directory of Cargo.toml'
+    default: '.'
+outputs:
+  tag:
+    description: 'release tag string when creating release PR or pre-release'
+  name:
+    description: 'release name'
+  body:
+    description: 'release body for use to auto-fill the GitHub release in pre-releases'
+  isnew:
+    description: 'true if one of the crates in the workspace has a version more recent than the latest on crates.io'
+  ispre:
+    description: 'true if one of the crates in the workspace is in pre-release'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
