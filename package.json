@@ -1,5 +1,5 @@
 {
-  "name": "cargo-version-bump",
+  "name": "cargo-release",
   "version": "0.0.0",
   "private": true,
   "description": "TypeScript template action",
