@@ -54,7 +54,7 @@ export async function listCrates(root: string): Promise<string[]> {
     const sfhiu = await Promise.all(dir.map(v => exists(path.join(root, v, "Cargo.toml"))));
     const filtered = dir.filter((_, id) => sfhiu[id]);
     // if there are no other crates in the workspace it means we are in a single crate repository
-    return filtered.length > 0 ? filtered : [root]
+    return filtered.length > 0 ? filtered : [""]
 }
 
 export function exists(path: string): Promise<boolean> {
