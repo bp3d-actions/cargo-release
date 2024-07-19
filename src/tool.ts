@@ -31,15 +31,20 @@ export async function get(path1: string, pathname: string): Promise<Project> {
     }
 }
 
-export interface WorkspaceRelease {
+export interface Release {
     tag: string,
     name: string,
     body: string,
     isNew: boolean,
-    isPre: boolean
+    isPre: boolean,
 }
 
-export async function loadWorkspace(root: string): Promise<WorkspaceRelease> {
+export interface Workspace {
+    release: Release,
+    projects: Project[]
+}
+
+export async function loadWorkspace(root: string): Promise<Workspace> {
     const crates = await listCrates(root)
     const projects = await Promise.all(crates.map(v => get(path.join(root, v, "Cargo.toml"), v)));
     const isSingleProject = projects.length === 1;
@@ -60,10 +65,13 @@ export async function loadWorkspace(root: string): Promise<WorkspaceRelease> {
         }
     }
     return {
-        tag: tag,
-        name: name,
-        body: body,
-        isNew: newProjects.length > 0,
-        isPre: isPre
+        release: {
+            tag: tag,
+            name: name,
+            body: body,
+            isNew: newProjects.length > 0,
+            isPre: isPre,
+        },
+        projects: projects
     }
 }

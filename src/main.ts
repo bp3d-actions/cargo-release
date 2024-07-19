@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import * as exec from '@actions/exec'
 import { getOctokit } from '@actions/github'
 import path from 'path'
 import {loadWorkspace} from './tool'
@@ -10,7 +11,8 @@ async function run(): Promise<void> {
         const root = path.join(process.cwd(), core.getInput('cwd'))
         const github = getOctokit(core.getInput('token'))
         if (mode === 'get') {
-            const release = await loadWorkspace(root);
+            const workspace = await loadWorkspace(root);
+            const release = workspace.release;
             if (release.isNew && await ghReleaseTagExists(release.tag, github)) {
                 release.isNew = false;
             }
@@ -20,6 +22,12 @@ async function run(): Promise<void> {
             core.setOutput("isnew", release.isNew);
             core.setOutput("ispre", release.isPre);
         } else if (mode === 'publish') {
+            const workspace = await loadWorkspace(root);
+            for (const project of workspace.projects) {
+                if (project.isNew) {
+                    await exec.exec("cargo publish", undefined, {cwd: path.join(root, project.pathname)});
+                }
+            }
         }
     } catch (error) {
         if (error instanceof Error) core.setFailed(error.message)
