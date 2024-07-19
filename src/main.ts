@@ -1,8 +1,8 @@
 import * as core from '@actions/core'
-import { getOctokit, context } from '@actions/github'
+import { getOctokit } from '@actions/github'
 import path from 'path'
-import {get, loadWorkspace} from './tool'
-import {ghReleaseTagExists, listCrates} from './utils'
+import {loadWorkspace} from './tool'
+import {ghReleaseTagExists} from './utils'
 
 async function run(): Promise<void> {
     try {

@@ -143,8 +143,7 @@ export async function ghReleaseTagExists(
         })
         core.debug(`Request status: ${req.status}`)
         core.debug('==> ghReleaseTagExists - end <==')
-        if (req.status === 200) return true
-        else return false
+        return req.status === 200;
     } catch (_) {
         return false
     }

@@ -1,5 +1,5 @@
 import {
-    getLatestCratesIoVersion, ghReleaseTagExists, listCrates,
+    getLatestCratesIoVersion, listCrates,
     loadCargo,
     parseVersion
 } from './utils'
