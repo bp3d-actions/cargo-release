@@ -122,7 +122,8 @@ function get(path1, pathname) {
             version: project.version,
             pathname: pathname,
             isNew,
-            isPre: pversion.prerelease.length > 0
+            isPre: pversion.prerelease.length > 0,
+            publish: project.publish
         };
     });
 }
@@ -130,7 +131,8 @@ exports.get = get;
 function loadWorkspace(root) {
     return __awaiter(this, void 0, void 0, function* () {
         const crates = yield (0, utils_1.listCrates)(root);
-        const projects = yield Promise.all(crates.map(v => get(path_1.default.join(root, v, "Cargo.toml"), v)));
+        let projects = yield Promise.all(crates.map(v => get(path_1.default.join(root, v, "Cargo.toml"), v)));
+        projects = projects.filter(v => v.publish);
         const isSingleProject = projects.length === 1;
         const newProjects = projects.filter(v => v.isNew);
         const isPre = projects.some(v => v.isPre);
@@ -266,27 +268,31 @@ function loadCargo(path) {
         const result = {
             name: '',
             version: '',
-            versionLineId: 0
+            versionLineId: 0,
+            publish: true
         };
         const stream = fs.createReadStream(path, 'utf8');
         const reader = new async_line_reader_1.AsyncLineReader(stream);
         const nameRegex = /name = "(.+)"/;
         const versionRegex = /version = "([0-9]+.[0-9]+.[0-9]+(-.+)?)"/;
+        const publishRegex = /publish = false/;
         let line;
         let lineId = 0;
         while ((line = yield reader.readLine())) {
             lineId += 1;
             const name = line.match(nameRegex);
             const version = line.match(versionRegex);
+            const publish = line.match(publishRegex);
+            if (publish) {
+                result.publish = false;
+                break;
+            }
             if (name)
                 result.name = name[1];
             if (version) {
                 result.version = version[1];
                 result.versionLineId = lineId;
             }
-            //If all inormation was retrieved stop to avoid further iterations
-            if (result.name && result.version)
-                break;
         }
         return result;
     });
