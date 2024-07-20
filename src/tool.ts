@@ -11,6 +11,7 @@ export interface Project {
     isNew: boolean
     isPre: boolean
     pathname: string
+    publish: boolean
 }
 
 export async function get(path1: string, pathname: string): Promise<Project> {
@@ -27,7 +28,8 @@ export async function get(path1: string, pathname: string): Promise<Project> {
         version: project.version,
         pathname: pathname,
         isNew,
-        isPre: pversion.prerelease.length > 0
+        isPre: pversion.prerelease.length > 0,
+        publish: project.publish
     }
 }
 
@@ -46,7 +48,8 @@ export interface Workspace {
 
 export async function loadWorkspace(root: string): Promise<Workspace> {
     const crates = await listCrates(root)
-    const projects = await Promise.all(crates.map(v => get(path.join(root, v, "Cargo.toml"), v)));
+    let projects = await Promise.all(crates.map(v => get(path.join(root, v, "Cargo.toml"), v)));
+    projects = projects.filter(v => v.publish);
     const isSingleProject = projects.length === 1;
     const newProjects = projects.filter(v => v.isNew);
     const isPre = projects.some(v => v.isPre);

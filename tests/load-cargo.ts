@@ -13,9 +13,9 @@ test('load_workspace_sample_1', async () => {
     const project = await loadWorkspace('./tests/workspace')
     expect(project.release.isPre).toEqual(true);
     expect(project.release.isNew).toEqual(true);
-    expect(project.release.tag).toEqual("core-1.0.0-rc.1.0.0+tracing-1.0.0-rc.2.1.0");
-    expect(project.release.name).toEqual("bp3d-debug release 1.0.0-rc.1.0.0");
-    expect(project.release.body).toEqual("bp3d-debug (core) v1.0.0-rc.1.0.0 (new) - [Link to crates.io](https://crates.io/crates/bp3d-debug)\n" +
+    expect(project.release.tag).toEqual("core-1.0.0-rc.5.0.0+tracing-1.0.0-rc.2.1.0");
+    expect(project.release.name).toEqual("bp3d-debug release 1.0.0-rc.5.0.0");
+    expect(project.release.body).toEqual("bp3d-debug (core) v1.0.0-rc.5.0.0 (new) - [Link to crates.io](https://crates.io/crates/bp3d-debug)\n" +
         "bp3d-tracing (tracing) v1.0.0-rc.2.1.0 (new) - [Link to crates.io](https://crates.io/crates/bp3d-tracing)");
 })
 
@@ -41,8 +41,17 @@ test('load_workspace_sample_4', async () => {
     const project = await loadWorkspace('./tests/workspace4')
     expect(project.release.isPre).toEqual(true);
     expect(project.release.isNew).toEqual(true);
-    expect(project.release.tag).toEqual("core-1.0.0-rc.1.0.0");
-    expect(project.release.name).toEqual("bp3d-debug release 1.0.0-rc.1.0.0");
-    expect(project.release.body).toEqual("bp3d-debug (core) v1.0.0-rc.1.0.0 (new) - [Link to crates.io](https://crates.io/crates/bp3d-debug)\n" +
+    expect(project.release.tag).toEqual("core-1.0.0-rc.5.0.0");
+    expect(project.release.name).toEqual("bp3d-debug release 1.0.0-rc.5.0.0");
+    expect(project.release.body).toEqual("bp3d-debug (core) v1.0.0-rc.5.0.0 (new) - [Link to crates.io](https://crates.io/crates/bp3d-debug)\n" +
         "bp3d-tracing (tracing) v1.0.0-alpha.2.0.0 - [Link to crates.io](https://crates.io/crates/bp3d-tracing)");
+})
+
+test('load_workspace_sample_5', async () => {
+    const project = await loadWorkspace('./tests/workspace5')
+    expect(project.release.isPre).toEqual(true);
+    expect(project.release.isNew).toEqual(true);
+    expect(project.release.tag).toEqual("1.0.0-rc.5.0.0");
+    expect(project.release.name).toEqual("bp3d-debug release 1.0.0-rc.5.0.0");
+    expect(project.release.body).toEqual("[Link to crates.io](https://crates.io/crates/bp3d-debug)");
 })

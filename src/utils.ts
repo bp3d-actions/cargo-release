@@ -46,7 +46,8 @@ function asyncLineReplace(
 export interface Cargo {
     name: string
     version: string
-    versionLineId: number
+    versionLineId: number,
+    publish: boolean
 }
 
 export async function listCrates(root: string): Promise<string[]> {
@@ -68,25 +69,30 @@ export async function loadCargo(path: string): Promise<Cargo> {
     const result = {
         name: '',
         version: '',
-        versionLineId: 0
+        versionLineId: 0,
+        publish: true
     }
     const stream = fs.createReadStream(path, 'utf8')
     const reader = new AsyncLineReader(stream)
     const nameRegex = /name = "(.+)"/
     const versionRegex = /version = "([0-9]+.[0-9]+.[0-9]+(-.+)?)"/
+    const publishRegex = /publish = false/
     let line
     let lineId = 0
     while ((line = await reader.readLine())) {
         lineId += 1
-        const name = line.match(nameRegex)
-        const version = line.match(versionRegex)
+        const name = line.match(nameRegex);
+        const version = line.match(versionRegex);
+        const publish = line.match(publishRegex);
+        if (publish) {
+            result.publish = false;
+            break;
+        }
         if (name) result.name = name[1]
         if (version) {
             result.version = version[1]
             result.versionLineId = lineId
         }
-        //If all inormation was retrieved stop to avoid further iterations
-        if (result.name && result.version) break
     }
     return result
 }
